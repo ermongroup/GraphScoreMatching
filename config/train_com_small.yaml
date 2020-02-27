@@ -1,0 +1,78 @@
+
+# the output files will be stored in the directory <exp_dir>/<exp_name>
+exp_dir: exp
+exp_name: community_small
+
+seed: 1234
+
+dataset:
+  dataset_size: 100  # the maximal loaded dataset size
+  max_node_num: 20
+  name: community_small  # name of the dataset, the pickle file should be data/<name>.pkl
+
+mcmc:  # hyper parameters in the Langevin MC sampling
+  eps:
+  - 1.0
+  - 0.5
+  - 0.1
+  fixed_node_number: true
+  grad_step_size:
+  - 0.05
+  - 0.005
+  - 0.0005
+  name: langevin
+  step_num: 1000
+model:
+  name: edp-gnn  # the name of the score-network, should be one of ['gnn', 'mlp', 'cov', 'unet', 'edp-gnn']
+  models:
+    model_1:
+      dropout_p: 0.0
+      gnn_hidden_num_list:  # feature number for each EDP-GNN layer
+      - 16
+      - 16
+      - 16
+      - 16
+      feature_nums:  # F_i
+      - 16
+      - 16
+      - 16
+      - 16
+      - 16
+      channel_num_list:  # C_i
+      - 2
+      - 4
+      - 4
+      - 4
+      - 2
+      name: gin  # the name of the GNN, should be one of ['gin', 'gcn']
+      use_norm_layers: false
+  stack_num: 1
+
+sample:
+  batch_size: 32
+
+test:
+  batch_size: 32
+  split: 0.2
+
+train:
+  batch_size: 32
+
+  lr_dacey: 0.999
+  lr_init: 0.001
+  momentum: 0.9
+
+  max_epoch: 5001
+  sample_interval: 2500  # run sampling after <sample_interval> epochs
+  save_interval: 2500 # save the model after <save_interval> epochs
+
+  shuffle: true
+  sigmas:
+  - 0.1
+  - 0.2
+  - 0.4
+  - 0.6
+  - 0.8
+  - 1.6
+
+  weight_decay: 0.0

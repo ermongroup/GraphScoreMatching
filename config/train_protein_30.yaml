@@ -1,0 +1,76 @@
+dataset:
+  dataset_size: 1024
+  dequantize: 0.0
+  do_round: false
+
+  load_data: true
+  max_node_num: 35
+  name: PROTEINS_full_30
+dev: !!python/object/apply:torch.device
+- cuda
+exp_dir: mc_gnn
+exp_name: PROTEINS_30
+permute: false
+
+mcmc:
+  eps: [1.0]
+  grad_step_size: [0.005]
+  fixed_node_number: true
+  name: langevin
+  step_num: 1000
+  use_mh: false
+model:
+  models:
+    model_1:
+      dropout_p: 0.0
+      gnn_hidden_num_list:
+      - 16
+      - 16
+      - 16
+      - 16
+      - 16
+      feature_nums:
+      - 16
+      - 16
+      - 32
+      - 32
+      - 32
+      - 16
+      channel_num_list:
+      - 2
+      - 4
+      - 8
+      - 8
+      - 8
+      - 4
+      name: gin
+      use_norm_layers: false
+  name: mc_gnn
+  stack_num: 1
+run_id: '17537'
+sample:
+  batch_size: 128
+seed: 1234
+test:
+  batch_size: 128
+  split: 0.3
+train:
+  batch_size: 32
+  fixed_noise: false
+  lr_dacey: 0.99
+  lr_init: 0.001
+  max_epoch: 501
+  momentum: 0.9
+  sample_interval: 500
+  save_interval: 500
+  shuffle: true
+  sigmas:
+  - 0.2
+  - 0.25
+  - 0.3
+  - 0.35
+  - 0.4
+  - 0.6
+  - 0.8
+  - 1.2
+  weight_decay: 0.0
