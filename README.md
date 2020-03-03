@@ -2,7 +2,7 @@
 
 This repo contains the official implementation for the paper 
 
-Permutation Invariant Graph Generation via Score-Based Generative Modeling (AISTATS 2020),
+[Permutation Invariant Graph Generation via Score-Based Generative Modeling](https://arxiv.org/abs/2003.00638) (AISTATS 2020),
 
 Authors: Chenhao Niu, Yang Song, Jiaming Song, Shengjia Zhao, Aditya Grover, Stefano Ermon 
 
@@ -47,8 +47,7 @@ The output files under the directory <exp_dir>/<exp_name> (set in the `YAML` con
 .
 ├── config.yaml  # a copy of the configuration 
 ├── fig  # reconstruction of the perturbed graphs
-│   ├── ...
-│   └── epoch_4999_1.6.pdf
+│   └── xxx.pdf
 ├── info.log  # logs (if running main.py)
 ├── models  
 │   └── xxx.pth  # the saved PyTorch checkpoint
