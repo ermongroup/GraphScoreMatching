@@ -8,29 +8,45 @@ import numpy as np
 
 
 def n_community(num_communities, max_nodes, p_inter=0.05):
-    c_sizes = [max_nodes // num_communities] * num_communities
-    max_nodes = max_nodes // num_communities * num_communities
-    p_inter = (p_inter * max_nodes) \
-        / (num_communities * (num_communities - 1) // 2 * (max_nodes // num_communities) ** 2)
-    print(num_communities, max_nodes, end=' ')
+    assert num_communities > 1
+    
+    one_community_size = max_nodes // num_communities
+    c_sizes = [one_community_size] * num_communities
+    total_nodes = one_community_size * num_communities
+    
+    """ 
+    here we calculate `p_make_a_bridge` so that `p_inter = \mathbb{E}(Number_of_bridge_edges) / Total_number_of_nodes `
+    
+    To make it more clear: 
+    let `M = num_communities` and `N = one_community_size`, then
+    
+    ```
+    p_inter
+    = \mathbb{E}(Number_of_bridge_edges) / Total_number_of_nodes
+    = (p_make_a_bridge * C_M^2 * N^2) / (MN)  # see the code below for this derivation
+    = p_make_a_bridge * (M-1) * N / 2
+    ```
+    
+    so we have:
+    """
+    p_make_a_bridge = p_inter * 2 / ((num_communities - 1) * one_community_size)
+    
+    print(num_communities, total_nodes, end=' ')
     graphs = [nx.gnp_random_graph(c_sizes[i], 0.7, seed=i) for i in range(len(c_sizes))]
-    # for i, graph in enumerate(graphs):
-    #     temp_arr = np.zeros(len(graphs))
-    #     temp_arr[i] = 1.0
-    #     nx.set_node_attributes(graph, temp_arr.tolist(), 'feature')
+
     G = nx.disjoint_union_all(graphs)
     communities = list(nx.connected_component_subgraphs(G))
     add_edge = 0
     for i in range(len(communities)):
         subG1 = communities[i]
         nodes1 = list(subG1.nodes())
-        for j in range(i + 1, len(communities)):
+        for j in range(i + 1, len(communities)):  # loop for C_M^2 times
             subG2 = communities[j]
             nodes2 = list(subG2.nodes())
             has_inter_edge = False
-            for n1 in nodes1:
-                for n2 in nodes2:
-                    if np.random.rand() < p_inter:
+            for n1 in nodes1:  # loop for N times
+                for n2 in nodes2:  # loop for N times
+                    if np.random.rand() < p_make_a_bridge:
                         G.add_edge(n1, n2)
                         has_inter_edge = True
                         add_edge += 1
