@@ -62,6 +62,18 @@ def check_adjs_symmetry(adjs):
 
 
 def gen_list_of_data(train_x_b, train_adj_b, train_node_flag_b, sigma_list):
+    """
+
+    :param train_x_b: [batch_size, N, F_in], batch of feature vectors of nodes
+    :param train_adj_b: [batch_size, N, N], batch of original adjacency matrices
+    :param train_node_flag_b: [batch_size, N], the flags for the existence of nodes
+    :param sigma_list: list of noise levels
+    :return:
+        train_x_b: [len(sigma_list) * batch_size, N, F_in], batch of feature vectors of nodes (w.r.t. `train_noise_adj_b`)
+        train_noise_adj_b: [len(sigma_list) * batch_size, N, N], batch of perturbed adjacency matrices
+        train_node_flag_b: [len(sigma_list) * batch_size, N], the flags for the existence of nodes (w.r.t. `train_noise_adj_b`)
+        grad_log_q_noise_list: [len(sigma_list) * batch_size, N, N], the ground truth gradient (w.r.t. `train_noise_adj_b`)
+    """
     assert isinstance(sigma_list, list)
     train_noise_adj_b_list = []
     grad_log_q_noise_list = []

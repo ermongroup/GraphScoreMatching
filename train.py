@@ -49,8 +49,13 @@ def fit(model, optimizer, mcmc_sampler, train_dl, max_node_number, max_epoch=20,
         t_start = time.time()
         model.train()
         for train_adj_b, train_x_b in train_dl:
+
+            # here,
+            # train_adj_b is of size [batch_size, N, N]
+            # train_x_b is of size [batch_size, N, F_i]
             train_adj_b = train_adj_b.to(config.dev)
             train_x_b = train_x_b.to(config.dev)
+
             train_node_flag_b = train_adj_b.sum(-1).gt(1e-5).to(dtype=torch.float32)
             if isinstance(sigma_list, float):
                 sigma_list = [sigma_list]
@@ -58,8 +63,10 @@ def fit(model, optimizer, mcmc_sampler, train_dl, max_node_number, max_epoch=20,
             train_node_flag_b, grad_log_q_noise_list = \
                 gen_list_of_data(train_x_b, train_adj_b,
                                  train_node_flag_b, sigma_list)
+            # thereafter,
+            # train_noise_adj_b is of size [len(sigma_list) * batch_size, N, N]
+            # train_x_b is of size [len(sigma_list) * batch_size, N, F_i]
             optimizer.zero_grad()
-            # print('config.dev: ', config.dev)
             score = model(x=train_x_b,
                           adjs=train_noise_adj_b,
                           node_flags=train_node_flag_b)
@@ -164,7 +171,9 @@ def train_main(config, args):
     train_dl, test_dl = load_data(config)
     mc_sampler = get_mc_sampler(config)
 
+    # here, the `model` get `num_classes=len(sigma_list)`
     model = get_score_model(config)
+
     param_strings = []
     max_string_len = 126
     for name, param in model.named_parameters():

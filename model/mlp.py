@@ -15,7 +15,8 @@ class MLP(nn.Module):
             input_dim: dimensionality of input features
             hidden_dim: dimensionality of hidden units at ALL layers
             output_dim: number of classes for prediction
-            device: which device to use
+            num_classes: the number of classes of input, to be treated with different gains and biases,
+                    (see the definition of class `ConditionalLayer1d`)
         """
 
         super(MLP, self).__init__()
@@ -53,6 +54,12 @@ class MLP(nn.Module):
                     self.cond_layers.append(ConditionalLayer1d(hidden_dim, num_classes, use_bias=True))
 
     def forward(self, x):
+        """
+        :param x: [num_classes * batch_size, N, F_i], batch of node features
+            note that in self.cond_layers[layer],
+            `x` is splited into `num_classes` groups in dim=0,
+            and then treated with different gains and biases
+        """
         if self.linear_or_not:
             # If linear model
             return self.linear(x)

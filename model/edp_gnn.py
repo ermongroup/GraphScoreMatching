@@ -49,6 +49,12 @@ class EdgeDensePredictionGraphScoreNetwork(nn.Module):
                  dev,
                  gnn_hidden_num_list=(8, 8),
                  num_classes=1):
+        """
+        note that `num_classes` means the number of different (gains, biases) in conditional layers
+        (see the definition of class `MLP` and class `ConditionalLayer1d`)
+
+        i.e., num_classes==len(sigma_list)
+        """
         super().__init__()
         self.num_classes = num_classes
         gnn_layer_num = len(feature_num_list) - 1
@@ -60,10 +66,6 @@ class EdgeDensePredictionGraphScoreNetwork(nn.Module):
                                     hidden_dim=sum(channel_num_list) * 2,
                                     num_layers=3,
                                     num_classes=num_classes)
-        # self.final_read_score = MLP(input_dim=sum(channel_num_list) + sum(feature_num_list)*2,
-        #                             output_dim=1, activate_func=torch.tanh,
-        #                             hidden_dim=sum(channel_num_list)*2 + sum(feature_num_list)*4,
-        #                             num_layers=3)
         for i in range(gnn_layer_num):
             gnn_feature_list = [feature_num_list[i] + channel_num_list[i]] + gnn_hidden_num_list
             gnn = gnn_module_func(feature_nums=gnn_feature_list, out_dim=feature_num_list[i + 1],
@@ -78,13 +80,13 @@ class EdgeDensePredictionGraphScoreNetwork(nn.Module):
 
     def forward(self, x, adjs, node_flags, viz=False, save_dir=None, title=''):
         """
-        :param x:  B x N x F_i, batch of node features
-        :param adjs: B x C_i x N x N, batch of adjacency matrices
-        :param node_flags:  B x N, batch of node_flags, denoting whether a node is effective in each graph
+        :param x: [num_classes * batch_size, N, F_i], batch of node features
+        :param adjs: [num_classes * batch_size, C_i, N, N], batch of adjacency matrices
+        :param node_flags: [num_classes * batch_size, N, F_i], batch of node_flags, denoting whether a node is effective in each graph
         :param viz: whether to visualize the intermediate channels
         :param title: the filename of the output figure (if viz==True)
         :param save_dir: the directory of the output figure (if viz==True)
-        :return: score: B x N x N, the estimated score
+        :return: score: [num_classes * batch_size, N, N], the estimated score
         """
         ori_adjs = adjs.unsqueeze(1)
         adjs = torch.cat([ori_adjs, 1. - ori_adjs], dim=1)  # B x 2 x N x N
