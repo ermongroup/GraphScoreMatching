@@ -11,7 +11,7 @@ We propose a permutation invariant approach to modeling graphs, using the framew
 
 ## Dependencies
 
-First, install PyTorch following the steps on its [official website](https://pytorch.org/). The code has been tested over PyTorch 1.3.1 version.
+First, install PyTorch following the steps on its [official website](https://pytorch.org/). The code has been tested over PyTorch 1.3.1 and 1.8.1.
 
 Then run the following command to install the other dependencies.
 
