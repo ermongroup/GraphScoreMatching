@@ -8,7 +8,7 @@ import networkx as nx
 import numpy as np
 import copy
 
-from evaluation.mmd import process_tensor, compute_mmd, gaussian_tv, gaussian
+from evaluation.mmd import process_tensor, compute_mmd, gaussian, gaussian_emd
 
 PRINT_TIME = True
 ORCA_DIR = 'evaluation/orca'  # the relative path to the orca dir
@@ -50,7 +50,7 @@ def degree_stats(graph_ref_list, graph_pred_list, is_parallel=True):
             degree_temp = np.array(nx.degree_histogram(graph_pred_list_remove_empty[i]))
             sample_pred.append(degree_temp)
     print(len(sample_ref), len(sample_pred))
-    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
+    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
     elapsed = datetime.now() - prev
     if PRINT_TIME:
         print('Time computing degree mmd: ', elapsed)
@@ -111,7 +111,7 @@ def spectral_stats(graph_ref_list, graph_pred_list, is_parallel=True):
 
     # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
     # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
+    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
     # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
     elapsed = datetime.now() - prev
@@ -163,7 +163,7 @@ def clustering_stats(graph_ref_list, graph_pred_list, bins=100, is_parallel=True
             hist, _ = np.histogram(
                 clustering_coeffs_list, bins=bins, range=(0.0, 1.0), density=False)
             sample_pred.append(hist)
-    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian,
+    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd,
                            sigma=1.0 / 10, distance_scaling=bins)
     elapsed = datetime.now() - prev
     if PRINT_TIME:

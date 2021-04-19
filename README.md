@@ -2,7 +2,7 @@
 
 This repo contains the official implementation for the paper 
 
-[Permutation Invariant Graph Generation via Score-Based Generative Modeling](https://arxiv.org/abs/2003.00638) (AISTATS 2020),
+[Permutation Invariant Graph Generation via Score-Based Generative Modeling](http://proceedings.mlr.press/v108/niu20a) (AISTATS 2020),
 
 Authors: Chenhao Niu, Yang Song, Jiaming Song, Shengjia Zhao, Aditya Grover, Stefano Ermon 
 
@@ -11,7 +11,7 @@ We propose a permutation invariant approach to modeling graphs, using the framew
 
 ## Dependencies
 
-First, install PyTorch following the steps on its [official website](https://pytorch.org/). The code has been tested over PyTorch 1.3.1 version.
+First, install PyTorch following the steps on its [official website](https://pytorch.org/). The code has been tested over PyTorch 1.3.1 and 1.8.1.
 
 Then run the following command to install the other dependencies.
 
@@ -48,7 +48,7 @@ The output files under the directory <exp_dir>/<exp_name> (set in the `YAML` con
 ├── config.yaml  # a copy of the configuration 
 ├── fig  # reconstruction of the perturbed graphs
 │   └── xxx.pdf
-├── info.log  # logs (if running main.py)
+├── info.log  # logs (if running train.py)
 ├── models  
 │   └── xxx.pth  # the saved PyTorch checkpoint
 └── sample
@@ -61,10 +61,10 @@ The output files under the directory <exp_dir>/<exp_name> (set in the `YAML` con
 
 ### Training
 
-`main.py` is the main executable file to run the whole pipeline (training, sampling, evaluation). Run `python main.py -h`  to show its usage:
+`train.py` is the main executable file to run the whole pipeline (training, sampling, evaluation). Run `python train.py -h`  to show its usage:
 
 ``` text
-usage: main.py [-h] -c CONFIG_FILE [-l LOG_LEVEL] [-m COMMENT]
+usage: train.py [-h] -c CONFIG_FILE [-l LOG_LEVEL] [-m COMMENT]
 
 Running Experiments
 
@@ -81,20 +81,20 @@ optional arguments:
 Examples:
 
 ```shell
-python main.py -c config/train_ego_small.py  # to run on Ego-small dataset
+python train.py -c config/train_ego_small.yaml  # to run on Ego-small dataset
 
-python main.py -c config/train_com_small.py  # to run on Community-small dataset
+python train.py -c config/train_com_small.yaml  # to run on Community-small dataset
 ```
 
 ### Sampling 
 
-`sample.py` is for evaluating a saved model. The usage is the same as `main.py`. To set the location of the saved model, change `model_save_dir` in the `YAML` file, e.g. `model_save_dir: 'exp/ego_small/edp-gnn_ego_small_xxx/models'`.
+`sample.py` is for evaluating a saved model. The usage is the same as `train.py`. To set the location of the saved model, change `model_save_dir` in the `YAML` file, e.g. `model_save_dir: 'exp/ego_small/edp-gnn_ego_small_xxx/models'`.
 
 Examples:
 
 ```shell
-python sample.py -c config/sample_ego_small.py  # to run on Ego-small dataset
-python sample.py -c config/sample_com_small.py  # to run on Community-small dataset
+python sample.py -c config/sample_ego_small.yaml  # to run on Ego-small dataset
+python sample.py -c config/sample_com_small.yaml  # to run on Community-small dataset
 ```
 
 
